@@ -9,7 +9,9 @@ router.get('/', function(req, res) {
 });
 
 router.post('/invite', function(req, res) {
-  if (req.body.email && (!config.inviteToken || (!!config.inviteToken && req.body.token === config.inviteToken))) {
+  console.log("Request token: " + req.body.token);
+  console.log("Config token: " + config.inviteToken);
+  if (req.body.email && (req.body.token === config.inviteToken)) {
     request.post({
         url: 'https://'+ config.slackUrl + '/api/users.admin.invite',
         form: {
@@ -25,53 +27,25 @@ router.post('/invite', function(req, res) {
         if (err) { return res.send('Error:' + err); }
         body = JSON.parse(body);
         if (body.ok) {
-          res.render('result', {
-            community: config.community,
-            message: 'Success! Check "'+ req.body.email +'" for an invite from Slack.'
-          });
+          console.log('Success: invitation_successful ' + req.body.email);
+          res.send('Success: invitation_successful ' + req.body.email);
         } else {
-          var error = body.error;
-          if (error === 'already_invited' || error === 'already_in_team') {
-            res.render('result', {
-              community: config.community,
-              message: 'Success! You were already invited.<br>' +
-                       'Visit to <a href="https://'+ config.slackUrl +'">'+ config.community +'</a>'
-            });
-            return;
-          } else if (error === 'invalid_email') {
-            error = 'The email you entered is an invalid email.'
-          } else if (error === 'invalid_auth') {
-            error = 'Something has gone wrong. Please contact a system administrator.'
-          }
-
-          res.render('result', {
-            community: config.community,
-            message: 'Failed! ' + error,
-            isFailed: true
-          });
+          console.log('Error: ' + body.error + req.body.email);
+          res.send('Error: ' + body.error + req.body.email);
         }
       });
+  } else if (!('email' in req.body)) {
+    console.log('Error: no email included in request');
+    res.send('Error: no email included in request');
+  } else if (!('token' in req.body)) {
+    console.log('Error: no token included in request');
+    res.send('Error: no token included in request');
+  } else if (!(req.body.token === config.inviteToken)) {
+    console.log('Error: incorrect invite token');
+    res.send('Error: incorrect invite token');
   } else {
-    var errMsg = [];
-    if (!req.body.email) {
-      errMsg.push('your email is required');
-    }
-
-    if (!!config.inviteToken) {
-      if (!req.body.token) {
-        errMsg.push('valid token is required');
-      }
-
-      if (req.body.token && req.body.token !== config.inviteToken) {
-        errMsg.push('the token you entered is wrong');
-      }
-    }
-
-    res.render('result', {
-      community: config.community,
-      message: 'Failed! ' + errMsg.join(' and ') + '.',
-      isFailed: true
-    });
+    console.log('Error: unknown error');
+    res.send('Error: unknown error');
   }
 });
 

@@ -11,7 +11,7 @@ and
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 ## Setting
-fill out `config.js` as your infomation.
+fill out `config.js` as your information.
 
 * `community`: your community or team name to display on join page.
 * `slackUrl` : your slack team url (ex: socketio.slack.com)
@@ -39,6 +39,8 @@ $ cd slack-invite-automation
 $ npm install
 $ bin/www
 ```
+
+Use ```heroku local``` to run a local dev environment. To do this you will want to [set up a .env file](https://devcenter.heroku.com/articles/heroku-local#set-up-your-local-environment-variables) that contains the environment variables from Heroku. Make sure the .env file does not get committed to the repo.
 
 You can access <http://localhost:3000> on your web browser.
 
