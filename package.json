@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "node ./node_modules/jasmine/bin/jasmine.js"
   },
   "dependencies": {
     "body-parser": "^1.14.0",
@@ -14,5 +15,8 @@
     "morgan": "^1.6.0",
     "request": "^2.62.0",
     "serve-favicon": "^2.3.0"
+  },
+  "devDependencies": {
+    "jasmine": "^2.4.1"
   }
 }
